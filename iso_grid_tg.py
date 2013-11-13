@@ -63,8 +63,13 @@ class iso_grid_tefflogg:
 
 	def query(self, feh, teff, logg):
 
-		r=np.zeros(feh.shape)+4.1
-		i=np.zeros(feh.shape)+3.9
-		ha=np.zeros(feh.shape)+3.81
+		rows=(self.metal_interp(feh) 
+			+ ( (teff-self.teff_min)*self.teff_gridlen/self.teff_step ) 
+			+ ( (logg-self.logg_min)*self.logg_gridlen/self.logg_step )).astype(int)
+		print rows
+
+		r=self.iso_array[rows, 9]
+		i=self.iso_array[rows, 10]
+		ha=self.iso_array[rows, 11]
 
 		return r, i, ha
