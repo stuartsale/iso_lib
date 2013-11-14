@@ -37,7 +37,7 @@ class iso_grid_tefflogg:
 				self.metal_dict[ array[i,self.metal_col] ]=i
 #				if self.metal_step==None and i!=0:
 #					self.metal_step=i
-		print self.metal_dict
+		print "metal dict:", self.metal_dict
 
 		self.metal_interp=si.interp1d(sorted(self.metal_dict.keys()), sorted(self.metal_dict.values()), kind='nearest', bounds_error=False)
 
@@ -48,7 +48,7 @@ class iso_grid_tefflogg:
 				self.teff_step=array[i,self.teff_col]-self.teff_min
 				self.teff_gridlen=i
 				break
-		print self.teff_min, self.teff_step, self.teff_gridlen
+		print "Teff grid:", self.teff_min, self.teff_step, self.teff_gridlen
 
 	
 		self.logg_min=array[0,self.logg_col]
@@ -57,16 +57,15 @@ class iso_grid_tefflogg:
 				self.logg_step=array[i,self.logg_col]-self.logg_min
 				self.logg_gridlen=i
 				break
-		print self.logg_min, self.logg_step, self.logg_gridlen
+		print "logg grid:", self.logg_min, self.logg_step, self.logg_gridlen
 	
 
 
 	def query(self, feh, teff, logg):
 
 		rows=(self.metal_interp(feh) 
-			+ ( (teff-self.teff_min)*self.teff_gridlen/self.teff_step ) 
-			+ ( (logg-self.logg_min)*self.logg_gridlen/self.logg_step )).astype(int)
-		print rows
+			+ ( np.rint((teff-self.teff_min)/self.teff_step)*self.teff_gridlen ) 
+			+ ( np.rint((logg-self.logg_min)/self.logg_step)*self.logg_gridlen )).astype(int)
 
 		r=self.iso_array[rows, 9]
 		i=self.iso_array[rows, 10]
