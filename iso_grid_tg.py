@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import scipy.interpolate as si
+import iso_obj as io
 
 class iso_grid_tefflogg:
 	'''A class which allows isochrones to be queried for many objects at the same time
@@ -13,7 +14,7 @@ class iso_grid_tefflogg:
 		self.logg_col=logg_col
 
 
-		self.iso_array=np.loadtxt(filename)
+		iso_array=np.loadtxt(filename)
 		self.metal_dict={}
 
 		self.metal_interp=None
@@ -26,13 +27,18 @@ class iso_grid_tefflogg:
 		self.logg_min=0.
 		self.logg_gridlen=0.
 
-		self.register(self.iso_array)
+		self.register(iso_array)
+
+		self.iso_array2=io.iso_objs(iso_array[:,1], iso_array[:,2], iso_array[:,0], iso_array[:,3], iso_array[:,4],
+						 iso_array[:,9], iso_array[:,10], iso_array[:,11], iso_array[:,5])
+		
 
 	def register(self, array):
 
 		print "Registering"
 
 		for i in range(array.shape[0]):
+
 			if array[i,self.metal_col] not in self.metal_dict:
 				self.metal_dict[ array[i,self.metal_col] ]=i
 #				if self.metal_step==None and i!=0:
@@ -67,8 +73,10 @@ class iso_grid_tefflogg:
 			+ ( np.rint((teff-self.teff_min)/self.teff_step)*self.teff_gridlen ) 
 			+ ( np.rint((logg-self.logg_min)/self.logg_step)*self.logg_gridlen )).astype(int)
 
-		r=self.iso_array[rows, 9]
-		i=self.iso_array[rows, 10]
-		ha=self.iso_array[rows, 11]
+#		r=self.iso_array[rows, 9]
+#		i=self.iso_array[rows, 10]
+#		ha=self.iso_array[rows, 11]
 
-		return r, i, ha
+#		return r, i, ha
+		return self.iso_array2.subset(rows)
+		
