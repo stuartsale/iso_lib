@@ -38,7 +38,7 @@ class iso_grid_tefflogg:
 	def register(self, array):
 
 		if self.verbose:
-    		print "Registering"
+			print "Registering"
 
 		for i in range(array.shape[0]):
 
@@ -46,8 +46,8 @@ class iso_grid_tefflogg:
 				self.metal_dict[ array[i,self.metal_col] ]=i
 #				if self.metal_step==None and i!=0:
 #					self.metal_step=i
-        if self.verbose:
-    		print "metal dict:", self.metal_dict
+		if self.verbose:
+			print "metal dict:", self.metal_dict
 
 		self.metal_interp=si.interp1d(sorted(self.metal_dict.keys()), sorted(self.metal_dict.values()), kind='nearest', bounds_error=False)
 
@@ -59,7 +59,7 @@ class iso_grid_tefflogg:
 				self.teff_gridlen=i
 				break
 		if self.verbose:
-    		print "Teff grid:", self.teff_min, self.teff_step, self.teff_gridlen
+			print "Teff grid:", self.teff_min, self.teff_step, self.teff_gridlen
 
 	
 		self.logg_min=array[0,self.logg_col]
@@ -69,7 +69,7 @@ class iso_grid_tefflogg:
 				self.logg_gridlen=i
 				break
 		if self.verbose:
-    		print "logg grid:", self.logg_min, self.logg_step, self.logg_gridlen
+			print "logg grid:", self.logg_min, self.logg_step, self.logg_gridlen
 	
 
 
