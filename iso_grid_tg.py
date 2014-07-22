@@ -8,10 +8,12 @@ class iso_grid_tefflogg:
 		- set up to work in {Teff, logg, feh} space
 		- Asumes a regular grid in '''
 
-	def __init__(self, filename, metal_col=0, teff_col=1, logg_col=2):
+	def __init__(self, filename, metal_col=0, teff_col=1, logg_col=2, verbose=False):
 		self.metal_col=metal_col
 		self.teff_col=teff_col
 		self.logg_col=logg_col
+		
+		self.verbose=verbose
 
 
 		iso_array=np.loadtxt(filename)
@@ -35,7 +37,8 @@ class iso_grid_tefflogg:
 
 	def register(self, array):
 
-		print "Registering"
+		if self.verbose:
+    		print "Registering"
 
 		for i in range(array.shape[0]):
 
@@ -43,7 +46,8 @@ class iso_grid_tefflogg:
 				self.metal_dict[ array[i,self.metal_col] ]=i
 #				if self.metal_step==None and i!=0:
 #					self.metal_step=i
-		print "metal dict:", self.metal_dict
+        if self.verbose:
+    		print "metal dict:", self.metal_dict
 
 		self.metal_interp=si.interp1d(sorted(self.metal_dict.keys()), sorted(self.metal_dict.values()), kind='nearest', bounds_error=False)
 
@@ -54,7 +58,8 @@ class iso_grid_tefflogg:
 				self.teff_step=array[i,self.teff_col]-self.teff_min
 				self.teff_gridlen=i
 				break
-		print "Teff grid:", self.teff_min, self.teff_step, self.teff_gridlen
+		if self.verbose:
+    		print "Teff grid:", self.teff_min, self.teff_step, self.teff_gridlen
 
 	
 		self.logg_min=array[0,self.logg_col]
@@ -63,7 +68,8 @@ class iso_grid_tefflogg:
 				self.logg_step=array[i,self.logg_col]-self.logg_min
 				self.logg_gridlen=i
 				break
-		print "logg grid:", self.logg_min, self.logg_step, self.logg_gridlen
+		if self.verbose:
+    		print "logg grid:", self.logg_min, self.logg_step, self.logg_gridlen
 	
 
 
