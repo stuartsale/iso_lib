@@ -28,7 +28,7 @@ class iso_objs:
 		if Jac_in is not None:
 			self.Jac=Jac_in
 		else:
-			self.Jac=np.zeros(self.Mi.shape)
+			self.Jac=np.ones(self.Mi.shape)
 
 		if ur_in is None:
 			self.ur = 0.000537208*(self.r0-self.i0)-0.003828217

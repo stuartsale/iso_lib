@@ -8,7 +8,7 @@ class iso_grid_tefflogg:
 		- set up to work in {Teff, logg, feh} space
 		- Asumes a regular grid in '''
 
-	def __init__(self, filename, metal_col=0, teff_col=1, logg_col=2, verbose=False):
+	def __init__(self, filename, metal_col=0, Mi_col=1, logage_col=2, teff_col=3, logg_col=4, Jac_col=5, verbose=False):
 		self.metal_col=metal_col
 		self.teff_col=teff_col
 		self.logg_col=logg_col
@@ -31,8 +31,8 @@ class iso_grid_tefflogg:
 
 		self.register(iso_array)
 
-		self.iso_array2=io.iso_objs(iso_array[:,1], iso_array[:,2], iso_array[:,0], iso_array[:,3], iso_array[:,4],
-						 iso_array[:,9], iso_array[:,10], iso_array[:,11], iso_array[:,5])
+		self.iso_array2=io.iso_objs(iso_array[:,Mi_col], iso_array[:,logage_col], iso_array[:,metal_col], iso_array[:,teff_col], iso_array[:,logg_col],
+						 iso_array[:,6], iso_array[:,7], iso_array[:,8], iso_array[:,Jac_col])
 		
 
 	def register(self, array):
@@ -70,14 +70,22 @@ class iso_grid_tefflogg:
 				break
 		if self.verbose:
 			print "logg grid:", self.logg_min, self.logg_step, self.logg_gridlen
+			
+		self.teff_max=np.max(array[:,self.teff_col])
+		self.logg_max=np.max(array[:,self.logg_col])				
 	
 
 
 	def query(self, feh, teff, logg):
+	
+		if teff>self.teff_max or teff<self.teff_min or logg>self.logg_max or logg<self.logg_min:
+			raise IndexError()
 
 		rows=(self.metal_interp(feh) 
 			+ ( np.rint((teff-self.teff_min)/self.teff_step)*self.teff_gridlen ) 
 			+ ( np.rint((logg-self.logg_min)/self.logg_step)*self.logg_gridlen )).astype(int)
+			
+#		print rows
 
 #		r=self.iso_array[rows, 9]
 #		i=self.iso_array[rows, 10]
