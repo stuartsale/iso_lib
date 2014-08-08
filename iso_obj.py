@@ -1,14 +1,14 @@
 import numpy as np
 import math
 
-
+from R_curves import R_curves
 
 class iso_objs:
 	""" As iso_obj, but intended to hold multiple objects [e.g. an entire library, an isochrone]"""
 
 	def __init__(self, Mi_in, logage_in, feh_in, logT_in, logg_in, r0_in, i0_in, ha0_in, Jac_in=None, 
 			ur_in=None, vr_in=None, ui_in=None, vi_in=None, uha_in=None, vha_in=None,
-			log_IMF_prob_in=None, log_SFR_prob_in=None) :
+			log_IMF_prob_in=None, log_SFR_prob_in=None, R_set=R_curves("/home/sale/work-oxford/tracks/R_tracks")) :
 
 
 #		if Mi_in.size!=logage_in or Mi_in.size!=feh_in or Mi_in.size!=logT_in or Mi_in.size!=logg_in or Mi_in.size!=r0_in or Mi_in.size!=i0_in or Mi_in.size!=ha0_in:
@@ -31,32 +31,32 @@ class iso_objs:
 			self.Jac=np.ones(self.Mi.shape)
 
 		if ur_in is None:
-			self.ur = 0.000537208*(self.r0-self.i0)-0.003828217
+			self.ur = R_set.ur_splines[11](self.logT)
 		else:
 			self.ur = ur_in
 
 		if vr_in is None:
-			self.vr = -0.030113725*(self.r0-self.i0)+0.843291883
+			self.vr = R_set.vr_splines[11](self.logT)
 		else:
 			self.vr = vr_in
 
-		if vr_in is None:
-			self.ui = 0.000035467*(self.r0-self.i0)-0.001929697 
+		if ui_in is None:
+			self.ui = R_set.ui_splines[11](self.logT)
 		else:
 			self.ui = ui_in
 
-		if vr_in is None:
-			self.vi = -0.012866951*(self.r0-self.i0)+0.602118304 
+		if vi_in is None:
+			self.vi = R_set.vi_splines[11](self.logT) 
 		else:
 			self.vi = vi_in
 
-		if vr_in is None:		
-			self.uha = 0.000058201*(self.r0-self.i0)-0.000054837
+		if uha_in is None:		
+			self.uha = R_set.uha_splines[11](self.logT)
 		else:
 			self.uha = uha_in
 
-		if vr_in is None:
-			self.vha = -0.000413472*(self.r0-self.i0)+0.762284312
+		if vha_in is None:
+			self.vha = R_set.vha_splines[11](self.logT)
 		else:
 			self.vha = vha_in
 
