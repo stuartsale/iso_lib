@@ -31,32 +31,32 @@ class iso_objs:
 			self.Jac=np.ones(self.Mi.shape)
 
 		if ur_in is None:
-			self.ur = R_set.ur_splines[11](self.logT)
+			self.ur = np.array([R(self.logT) for R in R_set.ur_splines]).T
 		else:
 			self.ur = ur_in
 
 		if vr_in is None:
-			self.vr = R_set.vr_splines[11](self.logT)
+			self.vr = np.array([R(self.logT) for R in R_set.vr_splines]).T
 		else:
 			self.vr = vr_in
 
 		if ui_in is None:
-			self.ui = R_set.ui_splines[11](self.logT)
+			self.ui = np.array([R(self.logT) for R in R_set.ui_splines]).T
 		else:
 			self.ui = ui_in
 
 		if vi_in is None:
-			self.vi = R_set.vi_splines[11](self.logT) 
+			self.vi = np.array([R(self.logT) for R in R_set.vi_splines]).T 
 		else:
 			self.vi = vi_in
 
 		if uha_in is None:		
-			self.uha = R_set.uha_splines[11](self.logT)
+			self.uha = np.array([R(self.logT) for R in R_set.uha_splines]).T
 		else:
 			self.uha = uha_in
 
 		if vha_in is None:
-			self.vha = R_set.vha_splines[11](self.logT)
+			self.vha = np.array([R(self.logT) for R in R_set.vha_splines]).T
 		else:
 			self.vha = vha_in
 
@@ -70,14 +70,17 @@ class iso_objs:
 		else:
 			self.log_SFR_prob=log_SFR_prob_in	
 
-	def Ar(self, A0):
-		return self.ur*A0*A0 + self.vr*A0
+	def Ar(self, A0, R=3.1):
+		index=np.rint((R-2.1)/0.1)
+		return self.ur[index]*A0*A0 + self.vr[index]*A0
 
-	def Ai(self, A0):
-		return self.ui*A0*A0 + self.vi*A0
+	def Ai(self, A0, R=3.1):
+		index=np.rint((R-2.1)/0.1)	
+		return self.ui[index]*A0*A0 + self.vi[index]*A0
 
-	def Aha(self, A0):
-		return self.uha*A0*A0 + self.vha*A0
+	def Aha(self, A0, R=3.1):
+		index=np.rint((R-2.1)/0.1)	
+		return self.uha[index]*A0*A0 + self.vha[index]*A0
 
 	def redline(self, r_i1):
 		A_int=(-(self.r0-self.i0)+r_i1)/(self.vr-self.vi)
