@@ -1,6 +1,6 @@
 import numpy as np
 import scipy.interpolate as si
-
+import numpy.ma as ma
 
 
 class R_curves:
@@ -31,12 +31,18 @@ class R_curves:
                 columns_required_values.append(first_line.index("A{}_2".format(band))-1)
                 
       
-            R_file=np.genfromtxt("{0:s}/{1:d}.2out".format(directory,int(R*10)), usecols=columns_required_values)[::-1]
-               
+            R_file=ma.masked_invalid(np.genfromtxt("{0:s}/{1:d}.2out".format(directory,int(R*10)), usecols=columns_required_values)[::-1])
+
+            Teff_col=columns_required_keys.index("Teff")          
             for band in bands:
-                self.u_splines[band].append(si.UnivariateSpline(np.log10(R_file[:,columns_required_keys.index("Teff")]),
-                        R_file[:,columns_required_keys.index("A{}_2".format(band))],k=1) )  
+                u_col=columns_required_keys.index("A{}_2".format(band))
+                v_col=columns_required_keys.index("A{}_1".format(band))                
+
+                self.u_splines[band].append(si.UnivariateSpline(
+                    ma.masked_array(np.log10(R_file[:,Teff_col]),mask=R_file[:,u_col].mask).compressed(),
+                    R_file[:,u_col].compressed(),k=1) )  
                         
-                self.v_splines[band].append(si.UnivariateSpline(np.log10(R_file[:,columns_required_keys.index("Teff")]),
-                        R_file[:,columns_required_keys.index("A{}_1".format(band))],k=1) )      
+                self.v_splines[band].append(si.UnivariateSpline(
+                    ma.masked_array(np.log10(R_file[:,Teff_col]),mask=R_file[:,v_col].mask).compressed(),
+                    R_file[:,v_col].compressed(),k=1) )     
         
