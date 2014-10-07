@@ -31,32 +31,32 @@ class iso_objs:
 			self.Jac=np.ones(self.Mi.shape)
 
 		if ur_in is None:
-			self.ur = np.array([R(self.logT) for R in R_set.ur_splines]).T
+			self.ur = np.array([ R(self.logT) for R in R_set.u_splines["r"] ]).T
 		else:
 			self.ur = ur_in
 
 		if vr_in is None:
-			self.vr = np.array([R(self.logT) for R in R_set.vr_splines]).T
+			self.vr = np.array([ R(self.logT) for R in R_set.v_splines["r"] ]).T
 		else:
 			self.vr = vr_in
 
 		if ui_in is None:
-			self.ui = np.array([R(self.logT) for R in R_set.ui_splines]).T
+			self.ui = np.array([ R(self.logT) for R in R_set.u_splines["i"] ]).T
 		else:
 			self.ui = ui_in
 
 		if vi_in is None:
-			self.vi = np.array([R(self.logT) for R in R_set.vi_splines]).T 
+			self.vi = np.array([ R(self.logT) for R in R_set.v_splines["i"] ]).T 
 		else:
 			self.vi = vi_in
 
 		if uha_in is None:		
-			self.uha = np.array([R(self.logT) for R in R_set.uha_splines]).T
+			self.uha = np.array([ R(self.logT) for R in R_set.u_splines["Ha"] ]).T
 		else:
 			self.uha = uha_in
 
 		if vha_in is None:
-			self.vha = np.array([R(self.logT) for R in R_set.vha_splines]).T
+			self.vha = np.array([ R(self.logT) for R in R_set.v_splines["Ha"] ]).T
 		else:
 			self.vha = vha_in
 
