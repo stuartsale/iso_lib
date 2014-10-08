@@ -17,7 +17,7 @@ class R_curves:
             self.A2_splines[band]=[]            
         
         for R in np.arange(2.1, 5.1, 0.1):
-            with open("{0:s}/{1:d}.2out".format(directory,int(R*10)), 'r') as f:
+            with open("{0:s}/{1:d}_curves.out".format(directory,int(R*10)), 'r') as f:
                 first_line = f.readline().split()
                 
             columns_required_keys=[]
@@ -33,7 +33,7 @@ class R_curves:
                 columns_required_values.append(first_line.index("A{}_2".format(band))-1)
                 
       
-            R_file=ma.masked_invalid(np.genfromtxt("{0:s}/{1:d}.2out".format(directory,int(R*10)), usecols=columns_required_values)[::-1])
+            R_file=ma.masked_invalid(np.genfromtxt("{0:s}/{1:d}_curves.out".format(directory,int(R*10)), usecols=columns_required_values)[::-1])
 
             Teff_col=columns_required_keys.index("Teff")          
             for band in bands:
