@@ -30,9 +30,14 @@ class iso_grid_tefflogg:
 		self.logg_gridlen=0.
 
 		self.register(iso_array)
+		
+		abs_mags={}
+		abs_mags["r"]=iso_array[:,6]
+		abs_mags["i"]=iso_array[:,7]
+		abs_mags["Ha"]=iso_array[:,8]				
 
 		self.iso_array2=io.iso_objs(iso_array[:,Mi_col], iso_array[:,logage_col], iso_array[:,metal_col], iso_array[:,teff_col], iso_array[:,logg_col],
-						 iso_array[:,6], iso_array[:,7], iso_array[:,8], iso_array[:,Jac_col])
+						 abs_mags, iso_array[:,Jac_col])
 		
 
 	def register(self, array):

@@ -6,11 +6,11 @@ from R_curves import R_curves
 class iso_objs:
 	""" As iso_obj, but intended to hold multiple objects [e.g. an entire library, an isochrone]"""
 
-	def __init__(self, Mi_in, logage_in, feh_in, logT_in, logg_in, r0_in, i0_in, ha0_in, Jac_in=None, 
-            AX1_in=None, AX2_in=None,
+	def __init__(self, Mi_in, logage_in, feh_in, logT_in, logg_in, abs_mag_in,#r0_in, i0_in, ha0_in, 
+        	Jac_in=None, AX1_in=None, AX2_in=None,
 			log_IMF_prob_in=None, log_SFR_prob_in=None, R_set=R_curves("/home/sale/work-oxford/tracks/Phoenix")) :
 			
-		bands=['r', 'i', 'Ha']
+		bands=abs_mag_in.keys()#['r', 'i', 'Ha']
 
 #		if Mi_in.size!=logage_in or Mi_in.size!=feh_in or Mi_in.size!=logT_in or Mi_in.size!=logg_in or Mi_in.size!=r0_in or Mi_in.size!=i0_in or Mi_in.size!=ha0_in:
 #			raise TypeError("Mismatched Input Arrays")
@@ -22,9 +22,11 @@ class iso_objs:
 		self.logT=logT_in
 		self.logg=logg_in
 
-		self.r0=r0_in
-		self.i0=i0_in
-		self.ha0=ha0_in
+#		self.r0=r0_in
+#		self.i0=i0_in
+#		self.ha0=ha0_in
+		
+		self.abs_mag=abs_mag_in
 
 		if Jac_in is not None:
 			self.Jac=Jac_in
@@ -61,17 +63,20 @@ class iso_objs:
     
 
 	def redline(self, r_i1):
-		A_int=(-(self.r0-self.i0)+r_i1)/(self.Ar1-self.Ai1)
-		return (self.Ar2-self.Aha2)*pow(A_int,2) + (self.Ar1-self.Aha2)*A_int + (self.r0-self.ha0)
+		A_int=(-(self.abs_mag["r"]-self.abs_mag["i"])+r_i1)/(self.Ar1-self.Ai1)
+		return (self.Ar2-self.Aha2)*pow(A_int,2) + (self.Ar1-self.Aha2)*A_int + (self.abs_mag["r"]-self.abs_mag["Ha"])
 
 	def subset(self, lines):	# Copy certain rows into a new iso_objs instance
 		AX1_cut={}
 		AX2_cut={}
+		abs_mag_cut={}
 
-		for band in self.AX1.keys():
+		for band in self.abs_mag.keys():
 			AX1_cut[band]=self.AX1[band][lines]
-			AX2_cut[band]=self.AX2[band][lines]	 
+			AX2_cut[band]=self.AX2[band][lines]
+			abs_mag_cut[band]=self.abs_mag[band][lines]
 	    
-		return iso_objs(self.Mi[lines], self.logage[lines], self.feh[lines], self.logT[lines], self.logg[lines], self.r0[lines], self.i0[lines], self.ha0[lines], self.Jac[lines], AX1_cut, AX2_cut, self.log_IMF_prob[lines], self.log_SFR_prob[lines])
+		return iso_objs(self.Mi[lines], self.logage[lines], self.feh[lines], self.logT[lines], self.logg[lines], abs_mag_cut, self.Jac[lines], 
+		        AX1_cut, AX2_cut, self.log_IMF_prob[lines], self.log_SFR_prob[lines])
 
 
