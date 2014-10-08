@@ -7,12 +7,14 @@ class R_curves:
 
     def __init__(self, directory, bands=['r', 'i', 'Ha']):
     
-        self.u_splines={}
-        self.v_splines={}
+        print "loading R curves"
+    
+        self.A1_splines={}
+        self.A2_splines={}
         
         for band in bands:
-            self.u_splines[band]=[]
-            self.v_splines[band]=[]            
+            self.A1_splines[band]=[]
+            self.A2_splines[band]=[]            
         
         for R in np.arange(2.1, 5.1, 0.1):
             with open("{0:s}/{1:d}.2out".format(directory,int(R*10)), 'r') as f:
@@ -38,11 +40,11 @@ class R_curves:
                 u_col=columns_required_keys.index("A{}_2".format(band))
                 v_col=columns_required_keys.index("A{}_1".format(band))                
 
-                self.u_splines[band].append(si.UnivariateSpline(
+                self.A2_splines[band].append(si.UnivariateSpline(
                     ma.masked_array(np.log10(R_file[:,Teff_col]),mask=R_file[:,u_col].mask).compressed(),
                     R_file[:,u_col].compressed(),k=1) )  
                         
-                self.v_splines[band].append(si.UnivariateSpline(
+                self.A1_splines[band].append(si.UnivariateSpline(
                     ma.masked_array(np.log10(R_file[:,Teff_col]),mask=R_file[:,v_col].mask).compressed(),
                     R_file[:,v_col].compressed(),k=1) )     
         
