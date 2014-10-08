@@ -8,7 +8,7 @@ class iso_objs:
 
 	def __init__(self, Mi_in, logage_in, feh_in, logT_in, logg_in, r0_in, i0_in, ha0_in, Jac_in=None, 
             AX1_in=None, AX2_in=None,
-			log_IMF_prob_in=None, log_SFR_prob_in=None, R_set=R_curves("/home/sale/work-oxford/tracks/R_tracks")) :
+			log_IMF_prob_in=None, log_SFR_prob_in=None, R_set=R_curves("/home/sale/work-oxford/tracks/Phoenix")) :
 			
 		bands=['r', 'i', 'Ha']
 
