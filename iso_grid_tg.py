@@ -90,12 +90,5 @@ class iso_grid_tefflogg:
 			+ ( np.rint((teff-self.teff_min)/self.teff_step)*self.teff_gridlen ) 
 			+ ( np.rint((logg-self.logg_min)/self.logg_step)*self.logg_gridlen )).astype(int)
 			
-#		print rows
-
-#		r=self.iso_array[rows, 9]
-#		i=self.iso_array[rows, 10]
-#		ha=self.iso_array[rows, 11]
-
-#		return r, i, ha
 		return self.iso_array2.subset(rows)
 		

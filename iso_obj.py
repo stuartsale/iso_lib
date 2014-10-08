@@ -6,11 +6,11 @@ from R_curves import R_curves
 class iso_objs:
 	""" As iso_obj, but intended to hold multiple objects [e.g. an entire library, an isochrone]"""
 
-	def __init__(self, Mi_in, logage_in, feh_in, logT_in, logg_in, abs_mag_in,#r0_in, i0_in, ha0_in, 
+	def __init__(self, Mi_in, logage_in, feh_in, logT_in, logg_in, abs_mag_in,
         	Jac_in=None, AX1_in=None, AX2_in=None,
 			log_IMF_prob_in=None, log_SFR_prob_in=None, R_set=R_curves("/home/sale/work-oxford/tracks/Phoenix")) :
 			
-		bands=abs_mag_in.keys()#['r', 'i', 'Ha']
+		bands=abs_mag_in.keys()
 
 #		if Mi_in.size!=logage_in or Mi_in.size!=feh_in or Mi_in.size!=logT_in or Mi_in.size!=logg_in or Mi_in.size!=r0_in or Mi_in.size!=i0_in or Mi_in.size!=ha0_in:
 #			raise TypeError("Mismatched Input Arrays")
@@ -21,10 +21,6 @@ class iso_objs:
 
 		self.logT=logT_in
 		self.logg=logg_in
-
-#		self.r0=r0_in
-#		self.i0=i0_in
-#		self.ha0=ha0_in
 		
 		self.abs_mag=abs_mag_in
 
