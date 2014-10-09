@@ -36,7 +36,21 @@ class iso_grid_tefflogg:
 			first_line = f.readline().split()
             
 		for band in bands:
-			abs_mags[band]=iso_array[:,first_line.index(band)-1]			
+			abs_mags[band]=iso_array[:,first_line.index(band)-1]
+			
+		if metal_col is not None:
+		    metal_col=first_line.index("[Fe/H]")-1	
+		if Mi_col is not None:
+		    Mi_col=first_line.index("Mi")-1
+		if logage_col is not None:
+		    logage_col=first_line.index("logAge")-1
+		if teff_col is not None:
+		    metal_col=first_line.index("Teff")-1
+		if logg_col is not None:
+		    metal_col=first_line.index("logg")-1
+		if Jac_col is not None:
+		    metal_col=first_line.index("[Fe/H]")-1		    		    		    		    
+		    
 
 		self.iso_array2=io.iso_objs(iso_array[:,Mi_col], iso_array[:,logage_col], iso_array[:,metal_col], iso_array[:,teff_col], iso_array[:,logg_col],
 						 abs_mags, iso_array[:,Jac_col])
