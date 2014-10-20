@@ -51,34 +51,34 @@ def iso_interp(filename, metallicity, metal_weight, output_obj, bands_dict):
 
     # Set metallicity
 
-    iso_data[:,0]=metallicity
+#    metal=np.zeros([iso_data.shape[0],1])+metallicity
 
     # work out point weight
 
     weights=np.zeros([iso_data.shape[0],1])
     for i in range(iso_data.shape[0]):
         if i==0:
-            weights[i]=(iso_data[i+1,2]-iso_data[i,2])*np.power(10,iso_data[i,1])
+            weights[i]=(iso_data[i+1,0]-iso_data[i,0])*np.power(10,iso_data[i,1])
         elif i==iso_data.shape[0]-1:
-            weights[i]=(iso_data[i,2]-iso_data[i-1,2])*np.power(10,iso_data[i,1])
+            weights[i]=(iso_data[i,0]-iso_data[i-1,0])*np.power(10,iso_data[i,1])
         elif iso_data[i,2]>iso_data[i+1,2]:
-            weights[i]=(iso_data[i,2]-iso_data[i-1,2])*np.power(10,iso_data[i,1])
+            weights[i]=(iso_data[i,0]-iso_data[i-1,0])*np.power(10,iso_data[i,1])
         elif iso_data[i-1,2]>iso_data[i,2]:
-            weights[i]=(iso_data[i+1,2]-iso_data[i,2])*np.power(10,iso_data[i,1])
+            weights[i]=(iso_data[i+1,0]-iso_data[i,0])*np.power(10,iso_data[i,1])
         else:
-            weights[i]=(iso_data[i+1,2]-iso_data[i-1,2])*np.power(10,iso_data[i,1])
-    weights1=weights[:].flatten()
-    weights.reshape(iso_data.shape[0],1)
-    iso_data=np.append(iso_data, weights, axis=1)
+            weights[i]=(iso_data[i+1,0]-iso_data[i-1,0])*np.power(10,iso_data[i,1])
+#    weights1=weights[:].flatten()
+#    weights.reshape(iso_data.shape[0],1)
+#    iso_data=np.append(iso_data, weights, axis=1)
 
     # Index data
 
-    binned_data=[ [ [] for i in range(13) ] for i in range(13) ]
+    binned_data=[ [ [] for i in range(13) ] for i in range(14) ]
 
     for i in range(iso_data.shape[0]):
 
         try:
-            binned_data[int(np.floor((iso_data[i,3]-3.4)/0.1))][int(np.floor((iso_data[i,4]+0.5)/0.5))].append(iso_data[:])
+            binned_data[int(np.floor((iso_data[i,3]-3.3)/0.1))][int(np.floor((iso_data[i,4]+1.5)/0.5))].append(iso_data[:])
         except IndexError:
             print datum[3], datum[4] 
 
@@ -103,21 +103,23 @@ def iso_interp(filename, metallicity, metal_weight, output_obj, bands_dict):
     
     logage=np.zeros(interp_points.T.shape[0])
     Mi=np.zeros(interp_points.T.shape[0])
-    r=np.zeros(interp_points.T.shape[0])
-    i=np.zeros(interp_points.T.shape[0])
-    ha=np.zeros(interp_points.T.shape[0])
-
+    
+    interp_photom={}
+    for band in bands_dict.values():
+        interp_photom[band] = np.zeros(interp_points.T.shape[0])
+    
     for it, point in enumerate(interp_points.T):
 #        print point, int(np.floor((point[0]-3.4)/0.1)), int(np.floor((point[1]+0.5)/0.5))
 #        iso_list=binned_data[int(np.floor((point[0]-3.4)/0.1))][int(np.floor((point[1]+0.5)/0.5))]
 
         shortlist=iso_data[np.power(iso_data[:,3]-point[0],2)*4. + np.power(iso_data[:,4]-point[1],2)< 0.01]
         if shortlist.size==0:
-            logage[it]=-99
-            Mi[it]=-99
-            r[it]=-99
-            i[it]=-99
-            ha[it]=-99
+            logage[it]=np.nan
+            Mi[it]=np.nan
+
+             for band in bands_dict.values():
+                interp_photom[band][it] = np.nan        
+
         else:
             short_weights1=shortlist[:,-1]/(1E-9+np.power(shortlist[:,3]-point[0],2.)*36.+np.power(shortlist[:,4]-point[1],2.))
             short_weights_sum1=np.sum(short_weights1)
