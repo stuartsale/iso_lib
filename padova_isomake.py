@@ -8,8 +8,10 @@ import glob as gb
 
 
 
-def iso_interp(filename, metallicity, metal_weight, output_obj, bands_dict, bands_ordered):
+def iso_interp(filenames, metallicity, metal_weight, output_obj, bands_dict, bands_ordered):
     print metallicity, metal_weight
+    if isinstance(filenames, basestring):
+        filenames=[filenames]
 
     logT_min=3.3
     logT_max=4.6
@@ -27,31 +29,38 @@ def iso_interp(filename, metallicity, metal_weight, output_obj, bands_dict, band
     
     # Find columns required
     
-    with open(filename, 'r') as f:
-        for x in range(100):
-            header_line=f.readline().split()
-            if "M_ini" in header_line:
-                break    
+    iso_data=[]
+    photom_data={}    
     
-    Mi_col = header_line.index("M_ini")-1
-    logage_col = header_line.index("log(age/yr)")-1
-    logTe_col = header_line.index("logTe")-1
-    logg_col = header_line.index("logG")-1
+    for filename in filenames:
     
-    photom_cols={}
-    
-    for band in bands_dict.keys():
-        if band in header_line:
-            photom_cols[bands_dict[band] ] = header_line.index(band)-1
+        with open(filename, 'r') as f:
+            for x in range(100):
+                header_line=f.readline().split()
+                if "M_ini" in header_line:
+                    break    
+        
+        Mi_col = header_line.index("M_ini")-1
+        logage_col = header_line.index("log(age/yr)")-1
+        logTe_col = header_line.index("logTe")-1
+        logg_col = header_line.index("logG")-1
+        
+        photom_cols={}
+        
+        for band in bands_dict.keys():
+            if band in header_line:
+                photom_cols[bands_dict[band] ] = header_line.index(band)-1
+            
+
+        # Read in data - need Z, age, Mi, logT, logg, r, i, Ha
+
+        iso_data.append(np.loadtxt( filename, usecols=(Mi_col, logage_col, logTe_col, logg_col) ))
         
 
-    # Read in data - need Z, age, Mi, logT, logg, r, i, Ha
-
-    iso_data=np.loadtxt( filename, usecols=(Mi_col, logage_col, logTe_col, logg_col) )
-    
-    photom_data={}
-    for band in photom_cols.keys():
-        photom_data[band]=np.loadtxt( filename, usecols=[photom_cols[band]] )
+        for band in photom_cols.keys():
+            photom_data[band]=np.loadtxt( filename, usecols=[photom_cols[band]] )
+            
+    iso_data=iso_data[0]            
 
     # Set metallicity
 
@@ -147,7 +156,7 @@ def iso_interp(filename, metallicity, metal_weight, output_obj, bands_dict, band
                 
     inner_counts, xe, ye=np.histogram2d(iso_data[:,2], iso_data[:,3], bins=[logT_edges, logg_edges])
     outer_counts=(snd.filters.uniform_filter(inner_counts, size=(2,5))*25+0.1).astype(int)
-    inner_Jac, xe, ye=np.histogram2d(iso_data[:,2], iso_data[:,3], bins=[logT_edges, logg_edges], weights=weights1)
+    inner_Jac, xe, ye=np.histogram2d(iso_data[:,2], iso_data[:,3], bins=[logT_edges, logg_edges], weights=weights[:].flatten())
     outer_Jac=(snd.filters.uniform_filter(inner_Jac, size=(2,5))*25)
 
     outer_Jac[outer_Jac<0.01]=0.
@@ -157,7 +166,7 @@ def iso_interp(filename, metallicity, metal_weight, output_obj, bands_dict, band
     output_array=[metals, Mi, logage, interp_points[0], interp_points[1], outer_Jac.flatten()]
     fmt_list=['%.3f', '%.3f', '%.3f', '%.3f', '%.3f', '%.3e']
     for band in bands_ordered:
-        output_array.appendinterp_photom[band]
+        output_array.append(interp_photom[band])
         fmt_list.append('%.3f')
     output_array.extend([inner_counts.flatten(), outer_counts.flatten()])
     fmt_list.extend(['%i', '%i'])    
