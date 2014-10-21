@@ -64,7 +64,6 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj, bands_dict, ban
 
     # Set metallicity
 
-#    metal=np.zeros([iso_data.shape[0],1])+metallicity
 
     # work out point weight
 
@@ -80,9 +79,6 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj, bands_dict, ban
             weights[i]=(iso_data[i+1,0]-iso_data[i,0])*np.power(10,iso_data[i,1])
         else:
             weights[i]=(iso_data[i+1,0]-iso_data[i-1,0])*np.power(10,iso_data[i,1])
-#    weights1=weights[:].flatten()
-#    weights.reshape(iso_data.shape[0],1)
-#    iso_data=np.append(iso_data, weights, axis=1)
 
     # Index data
 
@@ -101,18 +97,6 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj, bands_dict, ban
 
     metals=np.zeros(interp_points[0].shape)+metallicity
 
-#    logage_spline=si.SmoothBivariateSpline(iso_data[:,3], iso_data[:,4], iso_data[:,1], w=weights)
-#    #logage_rbf=si.Rbf(iso_data[:,3], iso_data[:,4], iso_data[:,1])
-#    for i in range(0, interp_points[0].size, 10):
-#        logage=logage_spline(interp_points[0,i:i+10], interp_points[1,i:i+10])
-##        logage=logage_rbf(interp_points[0,i:i+250], interp_points[1,iIi+250])
-
-#    logage=si.griddata(iso_data[:,3:5], iso_data[:,1], interp_points.T, method='cubic', fill_value=-99)
-#    Mi=si.griddata(iso_data[:,3:5], iso_data[:,2], interp_points.T, method='cubic', fill_value=-99)
-#    
-#    r=si.griddata(iso_data[:,3:5], iso_data[:,5], interp_points.T, method='cubic', fill_value=-99)
-#    i=si.griddata(iso_data[:,3:5], iso_data[:,6], interp_points.T, method='cubic', fill_value=-99)
-#    ha=si.griddata(iso_data[:,3:5], iso_data[:,7], interp_points.T, method='cubic', fill_value=-99)
     
     logage=np.zeros(interp_points.T.shape[0])
     Mi=np.zeros(interp_points.T.shape[0])
@@ -124,8 +108,6 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj, bands_dict, ban
     for it, point in enumerate(interp_points.T):
         if it%10000==0:
             print it, interp_points.shape[1]
-#        print point, int(np.floor((point[0]-3.4)/0.1)), int(np.floor((point[1]+0.5)/0.5))
-#        iso_list=binned_data[int(np.floor((point[0]-3.4)/0.1))][int(np.floor((point[1]+0.5)/0.5))]
 
         selection_array=np.power(iso_data[:,2]-point[0],2)*4. + np.power(iso_data[:,3]-point[1],2)< 0.01
 
