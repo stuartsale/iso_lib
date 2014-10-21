@@ -55,12 +55,14 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj, bands_dict, ban
         # Read in data - need Z, age, Mi, logT, logg, r, i, Ha
 
         iso_data.append(np.loadtxt( filename, usecols=(Mi_col, logage_col, logTe_col, logg_col) ))
+
+        assert iso_data[-1].size==iso_data[0].size
         
 
         for band in photom_cols.keys():
             photom_data[band]=np.loadtxt( filename, usecols=[photom_cols[band]] )
             
-    iso_data=iso_data[0]            
+    iso_data=iso_data[-1]            
 
     # Set metallicity
 
