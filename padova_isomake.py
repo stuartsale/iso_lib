@@ -163,4 +163,44 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj, bands_dict, ban
     
     
     
-#def padova_interpolated_isomake(folders, bands, output_file):
+def padova_interpolated_isomake(directories, bands_dict, output_filename, bands_ordered=None):
+    if isinstance(directories, basestring):
+        directories=[directories]
+        
+    iso_metal_dicts=[]
+        
+    for direc in directories:
+        iso_files_gz=gb.glob("{}/*.dat.gz".format(direc.rstrip("/")) )
+        iso_files=gb.glob("{}/*.dat".format(direc.rstrip("/")) )
+        
+        iso_metal_dict={}
+
+        # check for metallicity of each file
+
+        for iso_file1 in iso_files_gz:
+            iso_data=gz.open("{0}".format(iso_file1) )
+            for line in iso_data:
+                split_line=line.split()
+                if "[M/H]" in split_line:
+                    iso_metal_dict[float(split_line[split_line.index("[M/H]")+2])]=iso_file1
+                    
+        for iso_file1 in iso_files:
+            iso_data=open("{0}".format(iso_file1), "r" )
+            for line in iso_data:
+                split_line=line.split()
+                if "[M/H]" in split_line:
+                    iso_metal_dict[float(split_line[split_line.index("[M/H]")+2])]=iso_file1                       
+                    
+        iso_metal_dicts.append( iso_metal_dict )
+        
+    for metal in iso_metal_dicts[0].keys():
+        filenames=[ ]
+        for metal_dict in iso_metal_dicts:
+            if metal in metal_dict.keys():
+                filenames.append(metal_dict[metal])
+            else:
+                break
+        else:
+            print filenames
+        
+        
