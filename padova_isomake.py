@@ -166,41 +166,57 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj, bands_dict, ban
 def padova_interpolated_isomake(directories, bands_dict, output_filename, bands_ordered=None):
     if isinstance(directories, basestring):
         directories=[directories]
-        
-    iso_metal_dicts=[]
+
+    iso_metal_dict={}        
+    bands_metal_dicts={}
+    for band in bands_dict.keys():
+        bands_metal_dicts[band]={}
+    
+    # instead do this on band-by-band basis? *******************
         
     for direc in directories:
         iso_files_gz=gb.glob("{}/*.dat.gz".format(direc.rstrip("/")) )
         iso_files=gb.glob("{}/*.dat".format(direc.rstrip("/")) )
         
-        iso_metal_dict={}
-
         # check for metallicity of each file
+        # and check which bands it has
 
         for iso_file1 in iso_files_gz:
+            metal=None
             iso_data=gz.open("{0}".format(iso_file1) )
             for line in iso_data:
                 split_line=line.split()
                 if "[M/H]" in split_line:
-                    iso_metal_dict[float(split_line[split_line.index("[M/H]")+2])]=iso_file1
-                    
+                    metal=float(split_line[split_line.index("[M/H]")+2])
+                if "M_ini" in split_line:
+                    for band in bands_metal_dicts.keys():
+                        if band in split_line:
+                            bands_metal_dicts[band][metal]=iso_file1
+                                   
         for iso_file1 in iso_files:
+            metal=None
             iso_data=open("{0}".format(iso_file1), "r" )
             for line in iso_data:
                 split_line=line.split()
                 if "[M/H]" in split_line:
-                    iso_metal_dict[float(split_line[split_line.index("[M/H]")+2])]=iso_file1                       
-                    
-        iso_metal_dicts.append( iso_metal_dict )
+                    metal=float(split_line[split_line.index("[M/H]")+2])
+                if "M_ini" in split_line:
+                    for band in bands_metal_dicts.keys():
+                        if band in split_line:
+                            bands_metal_dicts[band][metal]=iso_file1                      
+
         
-    for metal in iso_metal_dicts[0].keys():
+    for metal in bands_metal_dicts[bands_metal_dicts.keys()[0]]:
         filenames=[ ]
-        for metal_dict in iso_metal_dicts:
-            if metal in metal_dict.keys():
-                filenames.append(metal_dict[metal])
+        for band in bands_metal_dicts:
+            if metal in bands_metal_dicts[band]:
+                if bands_metal_dicts[band][metal] not in filenames:
+                    filenames.append(bands_metal_dicts[band][metal])
             else:
                 break
         else:
-            print filenames
+            iso_metal_dict[metal]=filenames
+            
+    print iso_metal_dict
         
         
