@@ -6,6 +6,15 @@ import gzip as gz
 import glob as gb
 
 
+def replacement_gradient(x):
+
+    diff=np.diff(x)
+    out=np.zeros(x.shape)
+    out[:-1]+=diff
+    out[1:]+=diff
+    out[1:-1]/=2.
+    
+    return out
 
 
 def iso_interp(filenames, metallicity, metal_weight, output_obj, bands_dict, bands_ordered):
@@ -166,6 +175,19 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj, bands_dict, ban
 def padova_interpolated_isomake(directories, bands_dict, output_filename, bands_ordered=None):
     if isinstance(directories, basestring):
         directories=[directories]
+        
+    if bands_ordered is None:
+        bands_ordered=bands_dict.values()        
+        
+    output_obj=open(output_filename, "w")
+    
+    header_string="#\t[Fe/H]\tMass\tloggAge\tTeff\tlogg\tJacobian"
+    for band in bands_ordered:
+        header_string+="\t{}".format(band)
+    header_string+="\tinner_count\touter_count\n"
+    output_obj.write(header_string)
+        
+        
 
     iso_metal_dict={}        
     bands_metal_dicts={}
@@ -218,5 +240,16 @@ def padova_interpolated_isomake(directories, bands_dict, output_filename, bands_
             iso_metal_dict[metal]=filenames
             
     print iso_metal_dict
+    keys=iso_metal_dict.keys()
+    keys.sort()
+
+    print np.array(keys), np.gradient(np.array(keys))
+
+    if len(keys)>2:
+#        iso_metal_weights=dict(zip(keys, np.gradient(np.array(keys)) ) )       in numpy 1.9.0 gradient has changed to use second order behaviour at boundaries which gives wrong results in this context
+        iso_metal_weights=dict(zip(keys, replacement_gradient(np.array(keys)) ) ) 
+    else:
+        iso_metal_weights=dict(zip(keys, np.ones(len(keys)) ) )
+    print iso_metal_weights
         
         
