@@ -4,6 +4,8 @@ import scipy.ndimage as snd
 import scipy.interpolate as si
 import gzip as gz
 import glob as gb
+from sys import stdout
+
 
 
 def replacement_gradient(x):
@@ -18,7 +20,7 @@ def replacement_gradient(x):
 
 
 def iso_interp(filenames, metallicity, metal_weight, output_obj, bands_dict, bands_ordered):
-    print metallicity, metal_weight
+    print "[M/H]={0:.3f} , weight = {1:.3f}".format(metallicity, metal_weight)
     if isinstance(filenames, basestring):
         filenames=[filenames]
 
@@ -118,7 +120,9 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj, bands_dict, ban
     
     for it, point in enumerate(interp_points.T):
         if it%10000==0:
-            print it, interp_points.shape[1]
+#            print "\r", it, interp_points.shape[1],
+            stdout.write("\r{0} of {1}".format(it,interp_points.shape[1]) )
+            stdout.flush()
 
         selection_array=np.power(iso_data[:,2]-point[0],2)*4. + np.power(iso_data[:,3]-point[1],2)< 0.01
 
@@ -181,7 +185,7 @@ def padova_interpolated_isomake(directories, bands_dict, output_filename, bands_
         
     output_obj=open(output_filename, "w")
     
-    header_string="#\t[Fe/H]\tMass\tloggAge\tTeff\tlogg\tJacobian"
+    header_string="#\t[M/H]\tMi\tlogAge\tlogTe\tlogg\tJacobian"
     for band in bands_ordered:
         header_string+="\t{}".format(band)
     header_string+="\tinner_count\touter_count\n"
@@ -243,13 +247,18 @@ def padova_interpolated_isomake(directories, bands_dict, output_filename, bands_
     keys=iso_metal_dict.keys()
     keys.sort()
 
-    print np.array(keys), np.gradient(np.array(keys))
-
     if len(keys)>2:
 #        iso_metal_weights=dict(zip(keys, np.gradient(np.array(keys)) ) )       in numpy 1.9.0 gradient has changed to use second order behaviour at boundaries which gives wrong results in this context
         iso_metal_weights=dict(zip(keys, replacement_gradient(np.array(keys)) ) ) 
     else:
         iso_metal_weights=dict(zip(keys, np.ones(len(keys)) ) )
-    print iso_metal_weights
+    print "metals and weights: ",   iso_metal_weights      
+    
+# interp in metallicity order
+
+    for key in keys:
+	    iso_interp(iso_metal_dict[key], key, iso_metal_weights[key], output_obj, bands_dict, bands_ordered)
+
+    output_obj.close()    
         
         

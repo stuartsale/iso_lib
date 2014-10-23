@@ -8,7 +8,7 @@ class iso_grid_tefflogg:
 		- set up to work in {Teff, logg, feh} space
 		- Asumes a regular grid in '''
 
-	def __init__(self, filename, metal_col=0, Mi_col=1, logage_col=2, teff_col=3, logg_col=4, Jac_col=5, bands=["r", "i", "Ha"], verbose=False):
+	def __init__(self, filename, metal_col=0, Mi_col=1, logage_col=2, teff_col=3, logg_col=4, Jac_col=5, bands, verbose=False):
 		self.metal_col=metal_col
 		self.teff_col=teff_col
 		self.logg_col=logg_col
@@ -39,17 +39,17 @@ class iso_grid_tefflogg:
 			abs_mags[band]=iso_array[:,first_line.index(band)-1]
 			
 		if metal_col is not None:
-		    metal_col=first_line.index("[Fe/H]")-1	
+		    metal_col=first_line.index("[M/H]")-1	
 		if Mi_col is not None:
 		    Mi_col=first_line.index("Mi")-1
 		if logage_col is not None:
 		    logage_col=first_line.index("logAge")-1
 		if teff_col is not None:
-		    metal_col=first_line.index("Teff")-1
+		    metal_col=first_line.index("logTe")-1
 		if logg_col is not None:
 		    metal_col=first_line.index("logg")-1
 		if Jac_col is not None:
-		    metal_col=first_line.index("[Fe/H]")-1		    		    		    		    
+		    metal_col=first_line.index("Jacobian")-1		    		    		    		    
 		    
 
 		self.iso_array2=io.iso_objs(iso_array[:,Mi_col], iso_array[:,logage_col], iso_array[:,metal_col], iso_array[:,teff_col], iso_array[:,logg_col],
