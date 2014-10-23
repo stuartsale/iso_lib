@@ -8,9 +8,13 @@ class iso_objs:
 
 	def __init__(self, Mi_in, logage_in, feh_in, logT_in, logg_in, abs_mag_in,
         	Jac_in=None, AX1_in=None, AX2_in=None,
-			log_IMF_prob_in=None, log_SFR_prob_in=None, R_set=R_curves("/home/sale/work-oxford/tracks/Phoenix")) :
+			log_IMF_prob_in=None, log_SFR_prob_in=None, R_set=None, bands=None) :#R_curves("/home/sale/work-oxford/tracks/Phoenix")
 			
-		bands=abs_mag_in.keys()
+        if  AX1_in is None and AX2_in is None:
+            if bands is not None:
+                R_set=R_curves("/home/sale/work-oxford/tracks/Phoenix", bands)
+            else:            
+                raise ValueError("Either the bands needed must be given or extinction coefficiants provided")
 
 #		if Mi_in.size!=logage_in or Mi_in.size!=feh_in or Mi_in.size!=logT_in or Mi_in.size!=logg_in or Mi_in.size!=r0_in or Mi_in.size!=i0_in or Mi_in.size!=ha0_in:
 #			raise TypeError("Mismatched Input Arrays")
@@ -31,6 +35,7 @@ class iso_objs:
 			
 		if AX1_in is None:
 		    self.AX1={}
+		    print "splnes: ", R_set.A1_splines.keys()
 		    for band in bands:
 		        self.AX1[band]=np.array([ R(self.logT) for R in R_set.A1_splines[band] ]).T
 		else:
