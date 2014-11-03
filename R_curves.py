@@ -5,7 +5,7 @@ import numpy.ma as ma
 
 class R_curves:
 
-    def __init__(self, directory, bands=['r', 'i', 'Ha']):
+    def __init__(self, directory, bands):
     
         print "loading R curves"
     
