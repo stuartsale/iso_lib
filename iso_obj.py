@@ -16,9 +16,6 @@ class iso_objs:
             else:            
                 raise ValueError("Either the bands needed must be given or extinction coefficiants provided")
 
-#        if Mi_in.size!=logage_in or Mi_in.size!=feh_in or Mi_in.size!=logT_in or Mi_in.size!=logg_in or Mi_in.size!=r0_in or Mi_in.size!=i0_in or Mi_in.size!=ha0_in:
-#            raise TypeError("Mismatched Input Arrays")
-
         self.Mi=Mi_in
         self.logage=logage_in
         self.feh=feh_in
@@ -35,7 +32,7 @@ class iso_objs:
             
         if AX1_in is None:
             self.AX1={}
-            print "splines: ", R_set.A1_splines.keys()
+#            print "splines: ", R_set.A1_splines.keys()
             for band in bands:
                 self.AX1[band]=np.array([ R(self.logT) for R in R_set.A1_splines[band] ]).T
         else:

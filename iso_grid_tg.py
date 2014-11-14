@@ -65,8 +65,7 @@ class iso_grid_tefflogg:
 
 			if array[i,self.metal_col] not in self.metal_dict:
 				self.metal_dict[ array[i,self.metal_col] ]=i
-#				if self.metal_step==None and i!=0:
-#					self.metal_step=i
+
 		if self.verbose:
 			print "metal dict:", self.metal_dict
 

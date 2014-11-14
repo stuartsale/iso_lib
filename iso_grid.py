@@ -14,7 +14,7 @@ class iso_grid:
 
 		self.iso_array=np.loadtxt(filename)
 		self.metal_dict={}
-#		self.metal_step=None
+
 		self.metal_interp=None
 
 
@@ -36,8 +36,7 @@ class iso_grid:
 		for i in range(array.shape[0]):
 			if array[i,self.age_col] not in self.metal_dict:
 				self.metal_dict[ array[i,self.metal_col] ]=i
-#				if self.metal_step==None and i!=0:
-#					self.metal_step=i
+
 
 		self.metal_interp=si.interp1d(sorted(self.metal_dict.keys()), sorted(self.metal_dict.values()), kind='nearest', bounds_error=False)
 

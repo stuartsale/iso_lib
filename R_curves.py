@@ -7,7 +7,7 @@ class R_curves:
 
     def __init__(self, directory, bands):
     
-        print "loading R curves"
+#        print "loading R curves"
     
         self.A1_splines={}
         self.A2_splines={}
