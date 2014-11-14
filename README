@@ -1,1 +1,20 @@
-A python module for BASIC manipulating & use of isochrones.
+iso_lib - A python module for BASIC manipulation & use of isochrones.
+============================================================
+
+Author - Stuart Sale
+
+Intro
+------------
+
+This is python based module to for the manipulation of isochrones.
+Heavy use is made of dictionaries so that the module can be used with 
+any photometric bands.
+
+To date has only been tested on Padova isochrones from 
+http://stev.oapd.inaf.it/cgi-bin/cmd , but in principal could be used
+with any set of isochrones.
+
+
+Comments
+------------
+More documentation to follow in due course - assuming there demand.
