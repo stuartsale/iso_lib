@@ -66,6 +66,7 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj, bands_dict, ban
         # Read in data - need Z, age, Mi, logT, logg, r, i, Ha
 
         iso_data.append(np.loadtxt( filename, usecols=(Mi_col, logage_col, logTe_col, logg_col) ))
+        print iso_data[-1].size, iso_data[0].size, filename
 
         assert iso_data[-1].size==iso_data[0].size
         
