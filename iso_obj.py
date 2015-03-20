@@ -34,6 +34,7 @@ class iso_objs:
             self.AX1={}
 #            print "splines: ", R_set.A1_splines.keys()
             for band in bands:
+                print "find this bit of code (in iso_obj.py:__init__) and speed up!!!"
                 self.AX1[band]=np.array([ R(self.logT) for R in R_set.A1_splines[band] ]).T
         else:
             self.AX1=AX1_in
@@ -56,8 +57,8 @@ class iso_objs:
             self.log_SFR_prob=log_SFR_prob_in    
             
     def AX(self, band, A0, R=3.1):
-        index=np.rint((R-2.1)/0.1)
-        return self.AX2[band][index]*A0*A0 + self.AX1[band][index]*A0            
+        index=np.rint((R-2.1)/0.1).astype('int')
+        return self.AX2[band][np.arange(index.size),index]*A0*A0 + self.AX1[band][np.arange(index.size),index]*A0            
     
 
     def redline(self, r_i1):

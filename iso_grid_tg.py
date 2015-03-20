@@ -98,7 +98,7 @@ class iso_grid_tefflogg:
 
 	def query(self, feh, teff, logg):
 	
-		if teff>self.teff_max or teff<self.teff_min or logg>self.logg_max or logg<self.logg_min:
+		if np.any(teff>self.teff_max) or np.any(teff<self.teff_min) or np.any(logg>self.logg_max) or np.any(logg<self.logg_min):
 			raise IndexError()
 
 		rows=(self.metal_interp(feh) 
