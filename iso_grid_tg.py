@@ -97,9 +97,13 @@ class iso_grid_tefflogg:
 
 
     def query(self, feh, teff, logg):
-    
-        if np.any(teff>self.teff_max) or np.any(teff<self.teff_min) or np.any(logg>self.logg_max) or np.any(logg<self.logg_min):
-            raise IndexError()
+
+        teff_out_of_bounds=np.logical_or(teff>self.teff_max, teff<self.teff_min)
+        logg_out_of_bounds=np.logical_or(logg>self.logg_max, logg<self.logg_min)   
+        out_of_bounds=np.logical_or(teff_out_of_bounds,logg_out_of_bounds)
+        
+        teff[out_of_bounds]=self.teff_max
+        logg[out_of_bounds]=self.logg_max        
 
         rows=(self.metal_interp(feh) 
             + ( np.rint((teff-self.teff_min)/self.teff_step)*self.teff_gridlen ) 
