@@ -69,7 +69,7 @@ class iso_grid_tefflogg:
         if self.verbose:
             print "metal dict:", self.metal_dict
 
-        self.metal_interp=si.interp1d(sorted(self.metal_dict.keys()), sorted(self.metal_dict.values()), kind='nearest', bounds_error=False)
+        self.metal_interp=si.interp1d(sorted(self.metal_dict.keys()), sorted(self.metal_dict.values()), kind='nearest', bounds_error=False, fill_value=0)
 
 
         self.teff_min=array[0,self.teff_col]
