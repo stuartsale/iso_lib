@@ -34,7 +34,6 @@ class iso_objs:
             self.AX1={}
 #            print "splines: ", R_set.A1_splines.keys()
             for band in bands:
-                print "find this bit of code (in iso_obj.py:__init__) and speed up!!!"
                 self.AX1[band]=np.array([ R(self.logT) for R in R_set.A1_splines[band] ]).T
         else:
             self.AX1=AX1_in
