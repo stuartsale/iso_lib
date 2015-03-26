@@ -8,11 +8,12 @@ class iso_objs:
 
     def __init__(self, Mi_in, logage_in, feh_in, logT_in, logg_in, abs_mag_in,
             Jac_in=None, AX1_in=None, AX2_in=None,
-            log_IMF_prob_in=None, log_SFR_prob_in=None, R_set=None, bands=None) :#R_curves("/home/sale/work-oxford/tracks/Phoenix")
+            log_IMF_prob_in=None, log_SFR_prob_in=None, R_set=None, bands=None,
+            R_dir="/home/sale/work-oxford/tracks/Phoenix") :#R_curves("/home/sale/work-oxford/tracks/Phoenix")
             
         if  AX1_in is None and AX2_in is None:
             if bands is not None:
-                R_set=R_curves("/home/sale/work-oxford/tracks/Phoenix", bands)
+                R_set=R_curves(R_dir, bands)
             else:            
                 raise ValueError("Either the bands needed must be given or extinction coefficiants provided")
 
