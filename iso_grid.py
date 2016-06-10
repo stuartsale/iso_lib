@@ -3,7 +3,7 @@ import math
 import numpy as np
 import scipy.interpolate as si
 
-class iso_grid:
+class iso_grid(object):
     ''' Class isogrid
         A class which allows isochrones to be queried.
 

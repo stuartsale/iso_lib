@@ -5,7 +5,7 @@ import scipy.interpolate as si
 
 import iso_obj as io
 
-class iso_grid_tefflogg:
+class iso_grid_tefflogg(object):
     ''' Class isogrid
         A class which allows isochrones to be queried.
 

@@ -3,7 +3,7 @@ import numpy.ma as ma
 import scipy.interpolate as si
 
 
-class R_curves:
+class R_curves(object):
     """ Class R_curves
 
         Used to describe the extinction laws(s).

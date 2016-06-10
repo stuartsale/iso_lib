@@ -3,7 +3,7 @@ import numpy as np
 
 from R_curves import R_curves
 
-class iso_objs:
+class iso_objs(object):
     """ A class designed to hold an array of points from
         (a set of) isochrone(s).
 
