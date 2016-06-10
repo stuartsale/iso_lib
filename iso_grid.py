@@ -3,9 +3,38 @@ import math
 import scipy.interpolate as si
 
 class iso_grid:
-    '''A class which allows isochrones to be queried for many objects at the same time'''
+    ''' Class isogrid
+        A class which allows isochrones to be queried.
+
+        This class is designed for isochrones gridded in 
+        ([M/H], initial mass, age) space.
+
+        Designed so that many queires can be made at  
+        the same time.
+    '''
 
     def __init__(self, filename, metal_col=0, age_col=1, mass_col=2, regular_age_step=False):
+        """ __init__(self, filename, metal_col=0, age_col=1, 
+                     mass_col=2, regular_age_step=False)
+
+            Inititialises an iso_grid object by reading in the 
+            isochrones from an ascii file.
+
+            Parameters
+            ----------
+            filename : string
+                The file that contains the grid of isochrones
+            metal_col : int
+                The index of column in the file that contains 
+                the metallicity
+            age_col : int
+                The index of column in the file that contains 
+                the age
+            mass_col : int
+                The index of the column in the file that gives 
+                the initial mass.
+        """
+
         self.metal_col=metal_col
         self.age_col=age_col
         self.mass_col=mass_col
@@ -32,6 +61,18 @@ class iso_grid:
         self.register(self.iso_array)
 
     def register(self, array):
+        """ register(array)
+
+            Establishes the [M/H] values and the steps and 
+            ranges in age and initial mass. These are then 
+            stored for use when querying the grid.
+
+            Parameters
+            ----------
+            array : ndarray(float, float)
+                The data that will form the isochrone grid, as
+                just read in from file.
+        """
 
         for i in range(array.shape[0]):
             if array[i,self.age_col] not in self.metal_dict:
@@ -62,6 +103,30 @@ class iso_grid:
 
 
     def query(self, feh, Mi, age):
+        """ query( feh, Mi, age)
+
+            query the isochrone grid and obtain the absolute
+            magnitudes that correspond to the queried
+            ([M/H], initial mass, age) .
+
+            Parameters
+            ----------
+            feh : float, ndarray(float)
+                the metallicity of the point(s) to query
+            Mi : float, ndarray(float)
+                the initial mass of the point(s) to query
+            age : float, ndarray(float)
+                the initial mass of the point(s) to query
+
+            Returns
+            -------
+            r,i,ha : float, ndarray(float)
+                absolut magnitudes in the r,i & Ha bands.
+
+            Note
+            ----
+            The shape of feh, Mi and age must be consistent.
+        """
 
         r=np.zeros(feh.shape)+4.1
         i=np.zeros(feh.shape)+3.9

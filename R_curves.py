@@ -4,10 +4,33 @@ import numpy.ma as ma
 
 
 class R_curves:
+    """ Class R_curves
+
+        Used to describe the extinction laws(s).
+        Holds the variables needed for a parametiration of 
+        extinction in the form:
+        
+        A_X = c_X(R)*A_0^2 + d_X(R)*A_0
+
+    """
 
     def __init__(self, directory, bands):
+        """ __init__(directory, bands)
     
-#        print "loading R curves"
+            Initialise an R_curves object.
+
+            Parameters
+            ----------
+
+            directory : string
+                The directory containing the files which
+                list the coefficiants that characterise
+                the extinction laws
+            bands : list(string)
+                The photometric bands for which we require
+                the reddening laws.
+        """
+    
     
         self.A1_splines={}
         self.A2_splines={}

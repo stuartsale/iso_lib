@@ -4,11 +4,65 @@ import scipy.interpolate as si
 import iso_obj as io
 
 class iso_grid_tefflogg:
-    '''A class which allows isochrones to be queried for many objects at the same time
-        - set up to work in {Teff, logg, feh} space
-        - Asumes a regular grid in '''
+    ''' Class isogrid
+        A class which allows isochrones to be queried.
+
+        This class is designed for isochrones gridded in 
+        ([M/H], T_eff, log(g)) space.
+
+        Designed so that many queires can be made at  
+        the same time.
+    '''
 
     def __init__(self, filename, metal_col=0, Mi_col=1, logage_col=2, teff_col=3, logg_col=4, Jac_col=5, bands=None, verbose=False, R_dir="/home/sale/work-oxford/tracks/Phoenix"):
+        """ __init__(self, filename, metal_col=0, Mi_col=1, 
+                     logage_col=2, teff_col=3, logg_col=4, 
+                     Jac_col=5, bands=None, verbose=False, 
+                     R_dir="/home/sale/work-oxford/tracks/Phoenix")
+
+            Inititialises an iso_grid_tefflogg object by reading 
+            in the isochrones from an ascii file.
+
+            Parameters
+            ----------
+            filename : string
+                The file that contains the grid of isochrones
+            metal_col : int
+                The index of column in the file that contains 
+                the metallicity
+            age_col : int
+                The index of column in the file that contains 
+                the age
+            mass_col : int
+                The index of the column in the file that gives 
+                the initial mass.
+            teff_col : int
+                The index of the column in the file that gives 
+                the effective temperature.
+            logg_col : int
+                The index of the column in the file that gives 
+                the surface gravity log(g).
+            Jac_col : int
+                The index of the column in the file that gives 
+                the Jacobian for the conversion from 
+                (initial mass, age) to (T_eff, log(g)).
+            bands : list(string)
+                The photometric bands which we want to use
+            verbose : bool
+                If True various information is provided to
+                stdout. Useful when debugging.
+            R_dir : string
+                The location of the files that specify the 
+                reddening laws.
+
+            Note
+            ----
+            the band names given in bands must exactly match 
+            (a subset of) those in the column headings of the 
+            file and must also match band names used in the 
+            files that specify the reddening law.
+        """
+
         self.metal_col=metal_col
         self.teff_col=teff_col
         self.logg_col=logg_col
@@ -57,6 +111,18 @@ class iso_grid_tefflogg:
         
 
     def register(self, array):
+        """ register(array)
+
+            Establishes the [M/H] values and the steps and 
+            ranges in T_eff and log(g). These are then 
+            stored for use when querying the grid.
+
+            Parameters
+            ----------
+            array : ndarray(float, float)
+                The data that will form the isochrone grid, as
+                just read in from file.
+        """
 
         if self.verbose:
             print "Registering"
@@ -97,6 +163,31 @@ class iso_grid_tefflogg:
 
 
     def query(self, feh, teff, logg):
+        """ query( feh, teff, logg)
+
+            query the isochrone grid and obtain the absolute
+            magnitudes that correspond to the queried
+            ([Fe/H], T_eff, log(g)) .
+
+            Parameters
+            ----------
+            feh : float, ndarray(float)
+                the metallicity of the point(s) to query
+            Teff : float, ndarray(float)
+                the effective temperature of the point(s) 
+                to query
+            logg : float, ndarray(float)
+                the surface gravity of the point(s) to query
+
+            Returns
+            -------
+            An array of iso_objs objects corresponding to the
+            queried values.
+
+            Note
+            ----
+            The shape of feh, teff and logg must be consistent.
+        """
 
         teff_out_of_bounds=np.logical_or(teff>self.teff_max, teff<self.teff_min)
         logg_out_of_bounds=np.logical_or(logg>self.logg_max, logg<self.logg_min)   

@@ -20,6 +20,35 @@ def replacement_gradient(x):
 
 
 def iso_interp(filenames, metallicity, metal_weight, output_obj, bands_dict, bands_ordered):
+    """ iso_interp(filenames, metallicity, metal_weight, 
+                   output_obj, bands_dict, bands_ordered)
+
+        Interpolate isochrones defined in (initial Mass, log(age))
+        space onto a grid of points in (log(T_eff), log(g)).
+
+        Parameters
+        ----------
+        filenames : list(string)
+            the files that contain the isochrones
+        metallicity : float
+            the metallicity of the isochrone
+        metal_weight : float
+            a probability weight assigned to the metallicity
+        output_obj : 
+            a file output object to save the interpolated 
+            isochrones to.
+        bands_dict : dict
+            A dictionary containing the photometric bands
+            to be used.
+        bands_ordered : list
+            The bands in their desired order (can be arbitrary)
+
+        Notes
+        -----
+        Set up for use with Padova isochrones. May or may not 
+        work with other isochrone libraries.
+    """
+
     print "[M/H]={0:.3f} , weight = {1:.3f}".format(metallicity, metal_weight)
     if isinstance(filenames, basestring):
         filenames=[filenames]
@@ -178,6 +207,32 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj, bands_dict, ban
     
     
 def padova_interpolated_isomake(directories, bands_dict, output_filename, bands_ordered=None):
+    """ padova_interpolated_isomake(directories, bands_dict, 
+                                    output_filename, 
+                                    bands_ordered=None)
+
+        Interpolate several isochrones defined in 
+        (initial Mass, log(age)) space onto a grid of points
+        in (log(T_eff), log(g)).
+
+        This has been designed for use with Padova isochrones.
+
+        Parameters
+        ----------
+        directories : string, list(string)
+            the directories that contain the isochrone
+            files
+        bands_dict : dict
+            A dictionary containing the photometric bands
+            to be used.
+        output_filename : 
+            a filename object to save the interpolated 
+            isochrones to.
+        bands_ordered : list, optional
+            The bands in their desired order. If not given
+            is made from the values of bands_dict.
+    """
+
     if isinstance(directories, basestring):
         directories=[directories]
         
