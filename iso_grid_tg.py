@@ -1,3 +1,4 @@
+from __future__ import print_function, division
 import math
 import numpy as np
 import scipy.interpolate as si
@@ -134,7 +135,7 @@ class iso_grid_tefflogg:
         """
 
         if self.verbose:
-            print "Registering"
+            print("Registering")
 
         for i in range(array.shape[0]):
 
@@ -142,7 +143,7 @@ class iso_grid_tefflogg:
                 self.metal_dict[array[i,self.metal_col]] = i
 
         if self.verbose:
-            print "metal dict:", self.metal_dict
+            print("metal dict:", self.metal_dict)
 
         self.metal_interp = si.interp1d(sorted(self.metal_dict.keys()),
                                      sorted(self.metal_dict.values()),

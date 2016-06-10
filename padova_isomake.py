@@ -1,3 +1,4 @@
+from __future__ import print_function, division
 import glob as gb
 import gzip as gz
 import numpy as np
@@ -50,8 +51,8 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj,
         work with other isochrone libraries.
     """
 
-    print "[M/H]={0:.3f} , weight = {1:.3f}".format(metallicity,
-                                                    metal_weight)
+    print("[M/H]={0:.3f} , weight = {1:.3f}".format(metallicity,
+                                                    metal_weight))
     if isinstance(filenames, basestring):
         filenames = [filenames]
 
@@ -105,7 +106,7 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj,
                                                       logage_col,
                                                       logTe_col,
                                                       logg_col) ))
-        print iso_data[-1].size, iso_data[0].size, filename
+        print(iso_data[-1].size, iso_data[0].size, filename)
 
         assert iso_data[-1].size==iso_data[0].size
         
@@ -150,7 +151,7 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj,
                        [int(np.floor((iso_data[i,3]+1.5)/0.5))]\
                        .append(iso_data[:])
         except IndexError:
-            print "Error:", iso_data[i,2], iso_data[i,3]
+            print("Error:", iso_data[i,2], iso_data[i,3])
 
 
 
@@ -168,7 +169,7 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj,
     
     for it, point in enumerate(interp_points.T):
         if it%10000==0:
-#            print "\r", it, interp_points.shape[1],
+#            print("\r", it, interp_points.shape[1],)
             stdout.write("\r{0} of {1}".format(it,
                                               interp_points.shape[1]))
             stdout.flush()
@@ -337,7 +338,7 @@ def padova_interpolated_isomake(directories, bands_dict,
         else:
             iso_metal_dict[metal] = filenames
             
-    print iso_metal_dict
+    print(iso_metal_dict)
     keys = iso_metal_dict.keys()
     keys.sort()
 
@@ -347,7 +348,7 @@ def padova_interpolated_isomake(directories, bands_dict,
                                  replacement_gradient(np.array(keys)))) 
     else:
         iso_metal_weights = dict(zip(keys, np.ones(len(keys))))
-    print "metals and weights: ", iso_metal_weights      
+    print("metals and weights: ", iso_metal_weights)
     
 # interp in metallicity order
 

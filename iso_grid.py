@@ -1,3 +1,4 @@
+from __future__ import print_function, division
 import math
 import numpy as np
 import scipy.interpolate as si
@@ -92,7 +93,7 @@ class iso_grid:
                     self.age_step = array[i,self.age_col]-self.age_min
                     self.age_gridlen = i
                     break
-            print self.age_min, self.age_step, self.age_gridlen
+            print(self.age_min, self.age_step, self.age_gridlen)
 
         else:
             for i in range(sorted(self.metal_dict.values()) ):
