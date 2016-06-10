@@ -1,6 +1,6 @@
 import numpy as np
-import scipy.interpolate as si
 import numpy.ma as ma
+import scipy.interpolate as si
 
 
 class R_curves:

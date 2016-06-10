@@ -1,9 +1,9 @@
+import glob as gb
+import gzip as gz
 import numpy as np
 import scipy as sp
 import scipy.ndimage as snd
 import scipy.interpolate as si
-import gzip as gz
-import glob as gb
 from sys import stdout
 
 

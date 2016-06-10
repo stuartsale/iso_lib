@@ -1,6 +1,7 @@
-import numpy as np
 import math
+import numpy as np
 import scipy.interpolate as si
+
 import iso_obj as io
 
 class iso_grid_tefflogg:
