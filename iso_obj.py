@@ -11,10 +11,11 @@ class iso_objs:
         single isochrone or a set of random objects.
     """
 
-    def __init__(self, Mi_in, logage_in, feh_in, logT_in, logg_in, abs_mag_in,
-            Jac_in=None, AX1_in=None, AX2_in=None,
-            log_IMF_prob_in=None, log_SFR_prob_in=None, R_set=None, bands=None,
-            R_dir="/home/sale/work-oxford/tracks/Phoenix") :#R_curves("/home/sale/work-oxford/tracks/Phoenix")
+    def __init__(self, Mi_in, logage_in, feh_in, logT_in, logg_in, 
+                 abs_mag_in, Jac_in=None, AX1_in=None, AX2_in=None,
+                 log_IMF_prob_in=None, log_SFR_prob_in=None, 
+                 R_set=None, bands=None,
+                 R_dir="/home/sale/work-oxford/tracks/Phoenix"):
         """ __init__(self, Mi_in, logage_in, feh_in, logT_in, 
                      logg_in, abs_mag_in, Jac_in=None, 
                      AX1_in=None, AX2_in=None, 
@@ -77,46 +78,50 @@ class iso_objs:
             if bands is not None:
                 R_set=R_curves(R_dir, bands)
             else:            
-                raise ValueError("Either the bands needed must be given or extinction coefficiants provided")
+                raise ValueError("Either the bands needed must "
+                                 "be given or extinction "
+                                 "coefficiants provided.")
 
-        self.Mi=Mi_in
-        self.logage=logage_in
-        self.feh=feh_in
+        self.Mi = Mi_in
+        self.logage = logage_in
+        self.feh = feh_in
 
-        self.logT=logT_in
-        self.logg=logg_in
+        self.logT = logT_in
+        self.logg = logg_in
         
-        self.abs_mag=abs_mag_in
+        self.abs_mag = abs_mag_in
 
         if Jac_in is not None:
-            self.Jac=Jac_in
+            self.Jac = Jac_in
         else:
-            self.Jac=np.ones(self.Mi.shape)
+            self.Jac = np.ones(self.Mi.shape)
             
         if AX1_in is None:
-            self.AX1={}
+            self.AX1 = {}
 #            print "splines: ", R_set.A1_splines.keys()
             for band in bands:
-                self.AX1[band]=np.array([ R(self.logT) for R in R_set.A1_splines[band] ]).T
+                self.AX1[band] = np.array([R(self.logT) for R in 
+                                           R_set.A1_splines[band]]).T
         else:
-            self.AX1=AX1_in
+            self.AX1 = AX1_in
             
         if AX2_in is None:
-            self.AX2={}
+            self.AX2 = {}
             for band in bands:
-                self.AX2[band]=np.array([ R(self.logT) for R in R_set.A2_splines[band] ]).T
+                self.AX2[band] = np.array([R(self.logT) for R in 
+                                           R_set.A2_splines[band] ]).T
         else:
-            self.AX2=AX2_in            
+            self.AX2 = AX2_in            
 
         if log_IMF_prob_in is None:
-            self.log_IMF_prob=-2.7*self.Mi
+            self.log_IMF_prob = -2.7*self.Mi
         else:
-            self.log_IMF_prob=log_IMF_prob_in
+            self.log_IMF_prob = log_IMF_prob_in
 
         if log_SFR_prob_in is None:
-            self.log_SFR_prob=np.zeros(self.Mi.shape)
+            self.log_SFR_prob = np.zeros(self.Mi.shape)
         else:
-            self.log_SFR_prob=log_SFR_prob_in    
+            self.log_SFR_prob = log_SFR_prob_in    
             
     def AX(self, band, A0, R=3.1):
         """ AX(band, A0, R=3.1)
@@ -151,8 +156,9 @@ class iso_objs:
                 The band extinction
         """
 
-        index=np.rint((R-2.1)/0.1).astype('int')
-        return self.AX2[band][np.arange(index.size),index]*A0*A0 + self.AX1[band][np.arange(index.size),index]*A0            
+        index = np.rint((R-2.1)/0.1).astype('int')
+        return (self.AX2[band][np.arange(index.size),index]*A0*A0 
+                +self.AX1[band][np.arange(index.size),index]*A0)
     
 
     def redline(self, r_i1):
@@ -170,8 +176,11 @@ class iso_objs:
             float, ndarray(float)
                 The corresponding (r-Ha) colour(s)
         """
-        A_int=(-(self.abs_mag["r"]-self.abs_mag["i"])+r_i1)/(self.Ar1-self.Ai1)
-        return (self.Ar2-self.Aha2)*pow(A_int,2) + (self.Ar1-self.Aha2)*A_int + (self.abs_mag["r"]-self.abs_mag["Ha"])
+        A_int = ((-(self.abs_mag["r"]-self.abs_mag["i"])+r_i1)
+                 /(self.Ar1-self.Ai1))
+        return ((self.Ar2-self.Aha2)*pow(A_int,2) 
+                 +(self.Ar1-self.Aha2)*A_int
+                 +(self.abs_mag["r"]-self.abs_mag["Ha"]))
 
     def subset(self, lines):
         """ subset(lines)
@@ -190,16 +199,20 @@ class iso_objs:
                 isochrone points.
         """
 
-        AX1_cut={}
-        AX2_cut={}
-        abs_mag_cut={}
+        AX1_cut = {}
+        AX2_cut = {}
+        abs_mag_cut = {}
 
         for band in self.abs_mag.keys():
-            AX1_cut[band]=self.AX1[band][lines]
-            AX2_cut[band]=self.AX2[band][lines]
-            abs_mag_cut[band]=self.abs_mag[band][lines]
+            AX1_cut[band] = self.AX1[band][lines]
+            AX2_cut[band] = self.AX2[band][lines]
+            abs_mag_cut[band] = self.abs_mag[band][lines]
         
-        return iso_objs(self.Mi[lines], self.logage[lines], self.feh[lines], self.logT[lines], self.logg[lines], abs_mag_cut, self.Jac[lines], 
-                AX1_cut, AX2_cut, self.log_IMF_prob[lines], self.log_SFR_prob[lines])
+        return iso_objs(self.Mi[lines], self.logage[lines],
+                        self.feh[lines], self.logT[lines],
+                        self.logg[lines], abs_mag_cut,
+                        self.Jac[lines], AX1_cut, AX2_cut,
+                        self.log_IMF_prob[lines],
+                        self.log_SFR_prob[lines])
 
 

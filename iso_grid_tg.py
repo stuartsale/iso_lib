@@ -15,7 +15,10 @@ class iso_grid_tefflogg:
         the same time.
     '''
 
-    def __init__(self, filename, metal_col=0, Mi_col=1, logage_col=2, teff_col=3, logg_col=4, Jac_col=5, bands=None, verbose=False, R_dir="/home/sale/work-oxford/tracks/Phoenix"):
+    def __init__(self, filename, metal_col=0, Mi_col=1, logage_col=2,
+                 teff_col=3, logg_col=4, Jac_col=5, bands=None,
+                 verbose=False,
+                 R_dir="/home/sale/work-oxford/tracks/Phoenix"):
         """ __init__(self, filename, metal_col=0, Mi_col=1, 
                      logage_col=2, teff_col=3, logg_col=4, 
                      Jac_col=5, bands=None, verbose=False, 
@@ -64,51 +67,56 @@ class iso_grid_tefflogg:
             files that specify the reddening law.
         """
 
-        self.metal_col=metal_col
-        self.teff_col=teff_col
-        self.logg_col=logg_col
+        self.metal_col = metal_col
+        self.teff_col = teff_col
+        self.logg_col = logg_col
         
-        self.verbose=verbose
+        self.verbose = verbose
 
 
-        iso_array=np.loadtxt(filename)
-        self.metal_dict={}
+        iso_array = np.loadtxt(filename)
+        self.metal_dict = {}
 
-        self.metal_interp=None
+        self.metal_interp = None
 
-        self.teff_step=0.
-        self.teff_min=0.
-        self.teff_gridlen=0.
+        self.teff_step = 0.
+        self.teff_min = 0.
+        self.teff_gridlen = 0.
 
-        self.logg_step=0.
-        self.logg_min=0.
-        self.logg_gridlen=0.
+        self.logg_step = 0.
+        self.logg_min = 0.
+        self.logg_gridlen = 0.
 
         self.register(iso_array)
 
-        abs_mags={}        
+        abs_mags= {}        
         with open(filename, 'r') as f:
             first_line = f.readline().split()
             
         for band in bands:
-            abs_mags[band]=iso_array[:,first_line.index(band)-1]
+            abs_mags[band] = iso_array[:,first_line.index(band)-1]
             
         if metal_col is not None:
-            metal_col=first_line.index("[M/H]")-1    
+            metal_col = first_line.index("[M/H]")-1    
         if Mi_col is not None:
-            Mi_col=first_line.index("Mi")-1
+            Mi_col = first_line.index("Mi")-1
         if logage_col is not None:
-            logage_col=first_line.index("logAge")-1
+            logage_col = first_line.index("logAge")-1
         if teff_col is not None:
-            metal_col=first_line.index("logTe")-1
+            metal_col = first_line.index("logTe")-1
         if logg_col is not None:
-            metal_col=first_line.index("logg")-1
+            metal_col = first_line.index("logg")-1
         if Jac_col is not None:
             metal_col=first_line.index("Jacobian")-1                                                
             
 
-        self.iso_array2=io.iso_objs(iso_array[:,Mi_col], iso_array[:,logage_col], iso_array[:,metal_col], iso_array[:,teff_col], iso_array[:,logg_col],
-                         abs_mags, iso_array[:,Jac_col], bands=bands, R_dir=R_dir)
+        self.iso_array2 = io.iso_objs(iso_array[:,Mi_col],
+                                      iso_array[:,logage_col],
+                                      iso_array[:,metal_col],
+                                      iso_array[:,teff_col],
+                                      iso_array[:,logg_col],
+                                      abs_mags, iso_array[:,Jac_col], 
+                                      bands=bands, R_dir=R_dir)
         
 
     def register(self, array):
@@ -131,35 +139,40 @@ class iso_grid_tefflogg:
         for i in range(array.shape[0]):
 
             if array[i,self.metal_col] not in self.metal_dict:
-                self.metal_dict[ array[i,self.metal_col] ]=i
+                self.metal_dict[array[i,self.metal_col]] = i
 
         if self.verbose:
             print "metal dict:", self.metal_dict
 
-        self.metal_interp=si.interp1d(sorted(self.metal_dict.keys()), sorted(self.metal_dict.values()), kind='nearest', bounds_error=False, fill_value=0)
+        self.metal_interp = si.interp1d(sorted(self.metal_dict.keys()),
+                                     sorted(self.metal_dict.values()),
+                                     kind='nearest',
+                                     bounds_error=False, fill_value=0)
 
 
         self.teff_min=array[0,self.teff_col]
         for i in range(sorted(self.metal_dict.values())[1]):
-            if array[i,self.teff_col]!=self.teff_min:
-                self.teff_step=array[i,self.teff_col]-self.teff_min
-                self.teff_gridlen=i
+            if array[i,self.teff_col] != self.teff_min:
+                self.teff_step = array[i,self.teff_col]-self.teff_min
+                self.teff_gridlen = i
                 break
         if self.verbose:
-            print "Teff grid:", self.teff_min, self.teff_step, self.teff_gridlen
+            print("Teff grid:", self.teff_min, self.teff_step,
+                  self.teff_gridlen)
 
     
         self.logg_min=array[0,self.logg_col]
         for i in range(self.teff_gridlen):
-            if array[i,self.logg_col]!=self.logg_min:
-                self.logg_step=array[i,self.logg_col]-self.logg_min
-                self.logg_gridlen=i
+            if array[i,self.logg_col] != self.logg_min:
+                self.logg_step = array[i,self.logg_col]-self.logg_min
+                self.logg_gridlen = i
                 break
         if self.verbose:
-            print "logg grid:", self.logg_min, self.logg_step, self.logg_gridlen
+            print("logg grid:", self.logg_min, self.logg_step,
+                  self.logg_gridlen)
             
-        self.teff_max=np.max(array[:,self.teff_col])
-        self.logg_max=np.max(array[:,self.logg_col])                
+        self.teff_max = np.max(array[:,self.teff_col])
+        self.logg_max = np.max(array[:,self.logg_col])                
     
 
 
@@ -190,16 +203,21 @@ class iso_grid_tefflogg:
             The shape of feh, teff and logg must be consistent.
         """
 
-        teff_out_of_bounds=np.logical_or(teff>self.teff_max, teff<self.teff_min)
-        logg_out_of_bounds=np.logical_or(logg>self.logg_max, logg<self.logg_min)   
-        out_of_bounds=np.logical_or(teff_out_of_bounds,logg_out_of_bounds)
+        teff_out_of_bounds = np.logical_or(teff>self.teff_max,
+                                           teff<self.teff_min)
+        logg_out_of_bounds = np.logical_or(logg>self.logg_max,
+                                           logg<self.logg_min)   
+        out_of_bounds = np.logical_or(teff_out_of_bounds,
+                                      logg_out_of_bounds)
         
-        teff[out_of_bounds]=self.teff_max
-        logg[out_of_bounds]=self.logg_max        
+        teff[out_of_bounds] = self.teff_max
+        logg[out_of_bounds] = self.logg_max        
 
-        rows=(self.metal_interp(feh) 
-            + ( np.rint((teff-self.teff_min)/self.teff_step)*self.teff_gridlen ) 
-            + ( np.rint((logg-self.logg_min)/self.logg_step)*self.logg_gridlen )).astype(int)
+        rows = (self.metal_interp(feh) 
+                + ( np.rint((teff-self.teff_min)/self.teff_step)
+                    *self.teff_gridlen ) 
+                + ( np.rint((logg-self.logg_min)/self.logg_step)
+                    *self.logg_gridlen )).astype(int)
             
         return self.iso_array2.subset(rows)
         
