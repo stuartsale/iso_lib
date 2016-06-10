@@ -37,6 +37,10 @@ class iso_grid:
                 the initial mass.
         """
 
+        # As this class is not complete throw an error
+        raise NotImplementedError("This class is only partially "
+                                  "written.")
+
         self.metal_col = metal_col
         self.age_col = age_col
         self.mass_col = mass_col
