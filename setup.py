@@ -9,7 +9,7 @@ with open(path.join(here, 'README')) as f:
 
 
 setup(
-    name='iso_lib',
+    name='isolib',
 
     # No version number yet
     # version='',
