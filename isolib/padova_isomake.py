@@ -170,7 +170,7 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj,
         for band in photom_data.keys():
             shortlist_photom[band] = photom_data[band][selection_array]
 
-        if shortlist_iso.size = =0:
+        if shortlist_iso.size == 0:
             logage[it] = np.nan
             Mi[it] = np.nan
 
