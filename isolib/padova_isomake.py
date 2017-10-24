@@ -6,6 +6,7 @@ import scipy as sp
 import scipy.ndimage as snd
 import scipy.interpolate as si
 from sys import stdout
+from tqdm import tqdm
 
 
 def replacement_gradient(x):
@@ -20,9 +21,10 @@ def replacement_gradient(x):
 
 
 def iso_interp(filenames, metallicity, metal_weight, output_obj,
-               bands_dict, bands_ordered):
+               bands_dict, bands_ordered, verbose=False):
     """ iso_interp(filenames, metallicity, metal_weight,
-                   output_obj, bands_dict, bands_ordered)
+                   output_obj, bands_dict, bands_ordered,
+                   verbose=False)
 
         Interpolate isochrones defined in (initial Mass, log(age))
         space onto a grid of points in (log(T_eff), log(g)).
@@ -43,6 +45,8 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj,
             to be used.
         bands_ordered : list
             The bands in their desired order (can be arbitrary)
+        verbose : bool, optional
+            Controls how much output to stdout this function produces
 
         Notes
         -----
@@ -57,19 +61,19 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj,
 
     logT_min = 3.3
     logT_max = 4.6
-    logT_step = 0.01
+    logT_step = 0.025
 
     logg_min = -1.5
     logg_max = 5.5
-    logg_step = 0.01
+    logg_step = 0.025
 
     logT_edges = np.arange(logT_min-logT_step/2., logT_max+logT_step,
                            logT_step)
     logg_edges = np.arange(logg_min-logg_step/2., logg_max+logg_step,
                            logg_step)
 
-    interp_points_grid = np.mgrid[logT_min:logT_max+logT_step:logT_step,
-                                  logg_min:logg_max+logg_step:logg_step]
+    interp_points_grid = np.mgrid[logT_min:logT_max+logT_step/2:logT_step,
+                                  logg_min:logg_max+logg_step/2:logg_step]
     interp_points = np.array([interp_points_grid[0].flatten(),
                               interp_points_grid[1].flatten()])
 
@@ -143,7 +147,8 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj,
              [int(np.floor((iso_data[i, 3]+1.5)/0.5))]
              .append(iso_data[:]))
         except IndexError:
-            print("Error:", iso_data[i, 2], iso_data[i, 3])
+            if verbose:
+                print("Error:", iso_data[i, 2], iso_data[i, 3])
 
     # Re grid in hi-res
 
@@ -156,13 +161,10 @@ def iso_interp(filenames, metallicity, metal_weight, output_obj,
     for band in photom_data.keys():
         interp_photom[band] = np.zeros(interp_points.T.shape[0])
 
-    for it, point in enumerate(interp_points.T):
-        if it % 10000 == 0:
-            stdout.write("\r{0} of {1}".format(it, interp_points.shape[1]))
-            stdout.flush()
+    for it, point in enumerate(tqdm(interp_points.T)):
 
         selection_array = (np.power(iso_data[:, 2]-point[0], 2)*4.
-                           + np.power(iso_data[:, 3]-point[1], 2)) < 0.01
+                           + np.power(iso_data[:, 3]-point[1], 2)) < 0.025
 
         shortlist_iso = iso_data[selection_array]
         shortlist_weights = weights[selection_array]
