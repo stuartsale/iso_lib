@@ -23,7 +23,7 @@ installaition or `python setup.py develop` if you plan to modify the code
 Usage
 ------------
 
-Examples of how this library can be used are contained in the examples
+Examples of how this library can be used are contained in the examples/
 directory. 
 
 
